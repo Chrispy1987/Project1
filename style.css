@@ -1,12 +1,17 @@
+
+body {
+    text-align: center;
+}
 .container {
     display: flex;
     justify-content: center;    
     align-items: center;
     margin: 0 auto;
-    width: 400px;
+    width: 600px;
     height: auto;
     background-color: pink;
 }
+
 .letters {
     text-align: center;
     font-size: 20px;
