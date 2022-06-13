@@ -53,20 +53,15 @@ const createLetterBoxes = () => {
             e.target.style.outline = "none";
         })
         //Event listener - accept A-Z only and convert to Uppercase
-        input.addEventListener("input", function(e) {
+        //- change focus to next available input /or button
+        input.addEventListener("keyup", function(e) {
             const userInput = e.target.value.replace(/[^a-zA-Z\s]/g, "").toUpperCase();
             if (userInput !== "") {
-                console.log(e.target.textContent)
-                console.log(e.target);
                 e.target.value = userInput;
             } else {
-                e.target.previousSibling.focus();
-                //fix code so focus on first item if no previous sibling
-                //can we merge this into the KEYUP function to avoid conflict?
+                e.target.select();
+                return e.target.focus();
             }
-        })
-        //Event listener - change focus to next available input /or button
-        input.addEventListener("keyup", function(e) {
             let next = e.target.nextSibling;
             if (next === null) {
                 submit.focus();
