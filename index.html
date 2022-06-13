@@ -8,15 +8,56 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
-    <div class="container">
-        <ul id="words">
-        </ul>        
+    <div class="grid">
+        <div class="container input">
+            <ul id="words">
+            </ul>    
+            <p id="wrongLetters"></p>
+            <button id="submit">SUBMIT</button>
+        </div>
+        <div class="container topleft"></div>
+        <div class="container left"></div>
+        <div class="container topright"></div>
+        <div class="container right"></div>
+        <div class="container hangman">
+            <img class="hang">
+        </div>
+        <div class="keyboard">
+            <div class="row" id="row-1">
+                <button class="key letter">q</button>
+                <button class="key letter">w</button>
+                <button class="key letter">e</button>
+                <button class="key letter">r</button>
+                <button class="key letter">t</button>
+                <button class="key letter">y</button>
+                <button class="key letter">u</button>
+                <button class="key letter">i</button>
+                <button class="key letter">o</button>
+                <button class="key letter">p</button>
+            </div>
+            <div class="row" id="row-2">
+                <button class="key letter">a</button>
+                <button class="key letter">s</button>
+                <button class="key letter">d</button>
+                <button class="key letter">f</button>
+                <button class="key letter">g</button>
+                <button class="key letter">h</button>
+                <button class="key letter">j</button>
+                <button class="key letter">k</button>
+                <button class="key letter">l</button>
+            </div>
+            <div class="row" id="row-3">
+                <button class="key letter">z</button>
+                <button class="key letter">x</button>
+                <button class="key letter">c</button>
+                <button class="key letter">v</button>
+                <button class="key letter">b</button>
+                <button class="key letter">n</button>
+                <button class="key letter">m</button>
+            </div>
+        </div>
     </div>
-    <div>
-        <p id="wrongLetters"></p>
-    </div>
-    <button id="submit">SUBMIT</button>
+
     <script src="script.js"></script>
 </body>
 </html>
