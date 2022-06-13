@@ -10,17 +10,27 @@
 <body>
     <div class="grid">
         <div class="container input">
-            <ul id="words">
-            </ul>    
-            <p id="wrongLetters"></p>
+            <ul id="words"></ul>           
             <button id="submit">SUBMIT</button>
         </div>
-        <div class="container topleft"></div>
-        <div class="container left"></div>
-        <div class="container topright"></div>
-        <div class="container right"></div>
+        <div class="container topleft">
+            <h2>Hangin' with Friends</h2>
+        </div>
+        <div class="container left">
+            <h3>Friend details:</h3>
+        </div>
+        <div class="container topright">
+            <h3>Incorrect Letters:</h3>
+            <p id="wrongLetters"></p>
+        </div>
+        <div class="container right">
+            <h3>Win Streak:</h3>
+            <p id="winStreak"></p>
+            <h3>Correct Words:</h3>
+            <ul id="correctGuess"></ul>
+        </div>
         <div class="container hangman">
-            <img class="hang">
+            <img id="hang">
         </div>
         <div class="keyboard">
             <div class="row" id="row-1">

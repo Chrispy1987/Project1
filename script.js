@@ -3,6 +3,7 @@
 const showWrongLetters = document.getElementById("wrongLetters");
 const letters = document.getElementsByClassName("letters");
 const submit = document.getElementById("submit");
+const hang = document.getElementById("hang");
 
 
 //Global variables - create an array of arrays. 1st Array for (3) letter words, 2nd Array for (4) letter words etc.
@@ -14,7 +15,8 @@ const wordsByLength = [
 ];
 //Store core game data in an Object 
 const game = {
-    hangImages : [], //update with local images
+    hangImages : ["images/1.png", "images/2.png", "images/3.png", "images/4.png", "images/5.png", "images/6.png", "images/7.png", "images/8.png"], //update with local images
+    hangIndex : 0,
     wrongLetters : [], //store incorrect letters to help player
     level : 0,         //game diffilculty level
     winStreak : 0,     //how many games player has won in a row
@@ -117,14 +119,26 @@ const checkAnswer = (answer) => {
         } else if ((!game.wrongLetters.includes(letters[i].value)) && (letters[i].disabled === false)) {         
                 game.wrongLetters.push(letters[i].value);
                 const display = game.wrongLetters.join(', ');
-                showWrongLetters.textContent = `Incorrect letters: ${display}`;
+                showWrongLetters.textContent = display;
             } 
     }
     //if correct word, move to next level of game
     if (answer === game.word) {
         game.winStreak++;
         game.level++;
-        showWrongLetters.textContent = "CORRECT!!!"
+        hang.src = game.hangImages[0];
+        game.hangIndex = 0;
+        //Record winstreak value to right panel list
+        const winStreak = document.getElementById("winStreak");        
+        winStreak.textContent = game.winStreak;
+
+        //Record correct word to right panel list
+        const correctGuess = document.getElementById("correctGuess");
+        const newItem2 = document.createElement("li");
+        newItem2.textContent = answer;
+        correctGuess.appendChild(newItem2);
+
+       
         //refresh hangman
         //display winstreak on screen
         //history of winning words? side panel?
@@ -137,6 +151,13 @@ const checkAnswer = (answer) => {
             createLetterBoxes();
         }, game.interval);
      } else {
+        if (game.hangIndex < 7) {
+            hang.src = game.hangImages[game.hangIndex];
+            game.hangIndex += 1;
+        } else {
+            hang.src = game.hangImages[game.hangIndex];
+            showWrongLetters.textContent = "GAME OVER!!!"
+        }
          //refocus on the first incorrect letter to try again
          //change border/background color when nearing final guesses
          for (const letter of letters) {
