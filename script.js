@@ -5,18 +5,19 @@ const letters = document.getElementsByClassName("letters");
 const submit = document.getElementById("submit");
 const hang = document.getElementById("hang");
 
-
 //Global variables - create an array of arrays. 1st Array for (3) letter words, 2nd Array for (4) letter words etc.
 const wordsByLength = [
-    three = ["cat", "dog", "tip", "bee", "fly", "man", "sin", "pop", "red", "sit", "dot", "van", "rot", "bye", "dye", "sad", "arm"],
-    four = ["jazz", "high", "jerk", "lamb", "jump", "hazy", "jabs", "foxy", "fuze", "joke", "hope", "pray", "play", "stay", "buzz", "pool", "link", "hint", "junk", "jaws", "jams", "ripe", "hand", "site", "shot", "fort", "mean", "lean", "team", "meat", "seat", "unit", "hurt", "slog"],
-    five = ["abuse", "adult", "agent", "beach", "basis", "break", "chain", "brown", "chest", "china", "claim", "class", "dream", "final", "floor", "grass", "glass", "green", "group", "heart", "horse", "hotel", "motor", "mouth", "music", "novel", "nurse", "order", "owner", "panel", "phone", "point", "power", "radio", "scope", "score", "sheet", "shirt", "shift", "shock", "youth", "watch", "water", "whole", "while", "white", "woman", "unity", "union", "uncle", "truth"],
+    three = ["fly"], //for testing!
+    // three = ["cat", "dog", "tip", "bee", "fly", "man", "sin", "pop", "red", "sit", "dot", "van", "rot", "bye", "dye", "sad", "arm"],
+    four = ["jazz", "high", "jerk", "lamb", "jump", "hazy", "jabs", "foxy", "joke", "hope", "pray", "play", "stay", "buzz", "pool", "link", "hint", "junk", "jaws", "jams", "ripe", "hand", "site", "shot", "fort", "mean", "lean", "team", "meat", "seat", "unit", "hurt", "slog"],
+    five = ["chain"], //for testing!
+    // five = ["abuse", "adult", "agent", "beach", "basis", "break", "chain", "brown", "chest", "china", "claim", "class", "dream", "final", "floor", "grass", "glass", "green", "group", "heart", "horse", "hotel", "motor", "mouth", "music", "novel", "nurse", "order", "owner", "panel", "phone", "point", "power", "radio", "scope", "score", "sheet", "shirt", "shift", "shock", "youth", "watch", "water", "whole", "while", "white", "woman", "unity", "union", "uncle", "truth"],
     six = ["abroad", "afraid", "agenda", "anyway", "arrive", "barely", "avenue", "august", "become", "castle", "center", "caught", "choice", "custom", "debate", "defend", "defeat", "escape", "enough", "fabric", "fourth", "health", "hidden", "income", "inside", "island", "killed", "lawyer", "legacy", "launch", "manual", "margin", "people", "permit", "player", "policy", "police", "public", "reward", "return", "sample", "search", "select", "sexual", "silent", "simple", "sister", "survey", "ticket", "toward", "weight", "winter", "worker"]
 ];
 //Store core game data in an Object 
 const game = {
     hangImages : ["images/1.png", "images/2.png", "images/3.png", "images/4.png", "images/5.png", "images/6.png", "images/7.png", "images/8.png"], //update with local images
-    hangIndex : 0,
+    hangIndex : 0,      //record hangman image state
     wrongLetters : [], //store incorrect letters to help player
     level : 0,         //game diffilculty level
     winStreak : 0,     //how many games player has won in a row
@@ -32,6 +33,8 @@ const clearAll = () => {
     }
     game.wrongLetters = [];
     showWrongLetters.textContent = "";
+    hang.src = game.hangImages[0];
+    game.hangIndex = 0;
 }
 
 //Create letter input boxes based on the games level
@@ -39,6 +42,7 @@ const createLetterBoxes = () => {
     const words = document.querySelector("#words");
     for (let i = 0; i < game.level + 3; i++) {
         const input = document.createElement("input");
+        input.required;
         input.classList.add("letters");
         input.classList.add("animate");
         input.maxLength = 1;
@@ -57,10 +61,32 @@ const createLetterBoxes = () => {
         //Event listener - accept A-Z only and convert to Uppercase
         //- change focus to next available input /or button
         input.addEventListener("keyup", function(e) {
+            const key = e.key;
+            switch (key) {
+                case "Delete" :
+                case "Backspace" :
+                    if (e.target !== e.target.parentElement.firstChild) {   
+                        let previous = e.target.previousSibling;         
+                        if (previous.disabled === true) {
+                            while (previous !== null && previous.disabled === true) {
+                                previous = previous.previousSibling;                                  
+                            }
+                        }
+                            if (previous === null) {
+                                e.target.focus();
+                                e.target.select();
+                            } else {
+                                previous.focus(); 
+                            }
+                            return;
+                    }
+            }
+            
             const userInput = e.target.value.replace(/[^a-zA-Z\s]/g, "").toUpperCase();
             if (userInput !== "") {
                 e.target.value = userInput;
             } else {
+                console.log('invalid key entered');
                 e.target.select();
                 return e.target.focus();
             }
@@ -75,9 +101,11 @@ const createLetterBoxes = () => {
                     submit.focus();
                 } else {
                     next.focus(); 
+                    next.select();
                 }
             } else {
                 next.focus();
+                next.select();
             }
         });
         words.appendChild(input);
@@ -103,18 +131,18 @@ const checkAnswer = (answer) => {
         if (comparePlayerChoice[i] === compareGameChoice[i]) {  
             letters[i].style.backgroundColor = "yellowgreen";
             letters[i].disabled = true;
-            comparePlayerChoice[i] = 1;
+            compareGameChoice[i] = null;
         } 
         else {
             letters[i].style.backgroundColor = "red";            
         }
-    }  
+    }
 
     //check for match, but in wrong position
     for (let i = 0; i < answer.length; i++) { 
-        if ((compareGameChoice.includes(comparePlayerChoice[i])) && (compareGameChoice[i] === comparePlayerChoice[i])) {
-            console.log(compareGameChoice[i] + comparePlayerChoice[i])
+        if ((comparePlayerChoice.includes(compareGameChoice[i])) && (compareGameChoice[i] !== comparePlayerChoice[i])) {
             letters[i].style.backgroundColor = "orange";
+        
         //display incorrect letters to help player
         } else if ((!game.wrongLetters.includes(letters[i].value)) && (letters[i].disabled === false)) {         
                 game.wrongLetters.push(letters[i].value);
@@ -125,29 +153,20 @@ const checkAnswer = (answer) => {
     //if correct word, move to next level of game
     if (answer === game.word) {
         game.winStreak++;
-        game.level++;
-        hang.src = game.hangImages[0];
-        game.hangIndex = 0;
+        game.level++;         
         //Record winstreak value to right panel list
         const winStreak = document.getElementById("winStreak");        
         winStreak.textContent = game.winStreak;
-
         //Record correct word to right panel list
         const correctGuess = document.getElementById("correctGuess");
         const newItem2 = document.createElement("li");
         newItem2.textContent = answer;
         correctGuess.appendChild(newItem2);
 
-       
-        //refresh hangman
-        //display winstreak on screen
-        //history of winning words? side panel?
-
         //delay code for visual effect. Prep next level
         setTimeout(() => {
             clearAll();
             chooseWord();
-            //update hangman to next state
             createLetterBoxes();
         }, game.interval);
      } else {
@@ -156,10 +175,9 @@ const checkAnswer = (answer) => {
             game.hangIndex += 1;
         } else {
             hang.src = game.hangImages[game.hangIndex];
+            hang.style.padding = "20px"
             showWrongLetters.textContent = "GAME OVER!!!"
         }
-         //refocus on the first incorrect letter to try again
-         //change border/background color when nearing final guesses
          for (const letter of letters) {
              if (letter.disabled === false) {
                 return letter.focus();
@@ -169,9 +187,7 @@ const checkAnswer = (answer) => {
 }
 
 //EVENT LISTENERS
-//update event listener to only accept letters A-Z (genexp)
 //switch case to change behavious of DELETE, ENTER, TAB
-//convert all letters to uppercase
 
 //Start Game
 const startGame = document.querySelector("#submit");
@@ -179,10 +195,36 @@ startGame.addEventListener("click", () => {
     let answer = "";
     const letters = document.querySelectorAll(".letters");
     for (const letter of letters) {
+        if (letter.value === "") {
+            letter.focus();
+            return letter.select();
+        }
         answer += letter.value;
     }
     checkAnswer(answer);
 });
+startGame.addEventListener("keyup", function(e) {
+    const key = e.key;
+
+    switch(key) {
+        case "Delete" :
+        case "Backspace" : {
+            let previous = e.target.parentElement.children[0].lastChild;      
+                        if (previous.disabled === true) {
+                            while (previous !== null && previous.disabled === true) {
+                                previous = previous.previousSibling;                                  
+                            }
+                        }
+                            if (previous === null) {
+                                e.target.focus();
+                                e.target.select();
+                            } else {
+                                previous.focus(); 
+                            }
+                            return;
+        }
+    }
+})
 
 
 //ON FIRST LOAD - TESTING
