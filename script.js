@@ -5,15 +5,16 @@ const letters = document.getElementsByClassName("letters");
 const submit = document.getElementById("submit");
 const hang = document.getElementById("hang");
 
-//Global variables - create an array of arrays. 1st Array for (3) letter words, 2nd Array for (4) letter words etc.
+//Words stored in an array of arrays. 1st Array for (3) letter words, 2nd Array for (4) letter words etc.
 const wordsByLength = [
-    three = ["fly"], //for testing!
-    // three = ["cat", "dog", "tip", "bee", "fly", "man", "sin", "pop", "red", "sit", "dot", "van", "rot", "bye", "dye", "sad", "arm"],
+    // three = ["fly"], //for testing!
+    three = ["cat", "dog", "tip", "bee", "fly", "man", "sin", "pop", "red", "sit", "dot", "van", "rot", "bye", "dye", "sad", "arm"],
+    // four = ["jazz"], //for testing!
     four = ["jazz", "high", "jerk", "lamb", "jump", "hazy", "jabs", "foxy", "joke", "hope", "pray", "play", "stay", "buzz", "pool", "link", "hint", "junk", "jaws", "jams", "ripe", "hand", "site", "shot", "fort", "mean", "lean", "team", "meat", "seat", "unit", "hurt", "slog"],
-    five = ["chain"], //for testing!
-    // five = ["abuse", "adult", "agent", "beach", "basis", "break", "chain", "brown", "chest", "china", "claim", "class", "dream", "final", "floor", "grass", "glass", "green", "group", "heart", "horse", "hotel", "motor", "mouth", "music", "novel", "nurse", "order", "owner", "panel", "phone", "point", "power", "radio", "scope", "score", "sheet", "shirt", "shift", "shock", "youth", "watch", "water", "whole", "while", "white", "woman", "unity", "union", "uncle", "truth"],
-    six = ["hidden"], //for testing!
-    // six = ["abroad", "afraid", "agenda", "anyway", "arrive", "barely", "avenue", "august", "become", "castle", "center", "caught", "choice", "custom", "debate", "defend", "defeat", "escape", "enough", "fabric", "fourth", "health", "hidden", "income", "inside", "island", "killed", "lawyer", "legacy", "launch", "manual", "margin", "people", "permit", "player", "policy", "police", "public", "reward", "return", "sample", "search", "select", "sexual", "silent", "simple", "sister", "survey", "ticket", "toward", "weight", "winter", "worker"]
+    // five = ["chain"], //for testing!
+    five = ["abuse", "adult", "agent", "beach", "basis", "break", "chain", "brown", "chest", "china", "claim", "class", "dream", "final", "floor", "grass", "glass", "green", "group", "heart", "horse", "hotel", "motor", "mouth", "music", "novel", "nurse", "order", "owner", "panel", "phone", "point", "power", "radio", "scope", "score", "sheet", "shirt", "shift", "shock", "youth", "watch", "water", "whole", "while", "white", "woman", "unity", "union", "uncle", "truth"],
+    // six = ["island"], //for testing!
+    six = ["abroad", "afraid", "agenda", "anyway", "arrive", "barely", "avenue", "august", "become", "castle", "center", "caught", "choice", "custom", "debate", "defend", "defeat", "escape", "enough", "fabric", "fourth", "health", "hidden", "income", "inside", "island", "killed", "lawyer", "legacy", "launch", "manual", "margin", "people", "permit", "player", "policy", "police", "public", "reward", "return", "sample", "search", "select", "sexual", "silent", "simple", "sister", "survey", "ticket", "toward", "weight", "winter", "worker"]
 ];
 //Store core game data in an Object 
 const game = {
@@ -28,9 +29,9 @@ const game = {
 
 //Clear existing inputs for next level
 const clearAll = () => {
-    const words = document.querySelector("#words");
-    while(words.hasChildNodes()) {
-      words.firstChild.remove();
+    const tiles = document.querySelector("#tiles");
+    while(tiles.hasChildNodes()) {
+      tiles.firstChild.remove();
     }
     game.wrongLetters = [];
     showWrongLetters.textContent = "";
@@ -40,7 +41,7 @@ const clearAll = () => {
 
 //Create letter input boxes based on the games level
 const createLetterBoxes = () => {
-    const words = document.querySelector("#words");
+    const tiles = document.querySelector("#tiles");
     for (let i = 0; i < game.level + 3; i++) {
         const input = document.createElement("input");
         input.required;
@@ -73,13 +74,13 @@ const createLetterBoxes = () => {
                                 previous = previous.previousSibling;                                  
                             }
                         }
-                            if (previous === null) {
-                                e.target.focus();
-                                e.target.select();
-                            } else {
-                                previous.focus(); 
-                            }
-                            return;
+                        if (previous === null) {
+                            e.target.focus();
+                            e.target.select();
+                        } else {
+                            previous.focus(); 
+                        }
+                        return;
                     }
             }
             
@@ -109,7 +110,7 @@ const createLetterBoxes = () => {
                 next.select();
             }
         });
-        words.appendChild(input);
+        tiles.appendChild(input);
         letters[0].focus();
     }
 }
@@ -126,21 +127,32 @@ const checkAnswer = (answer) => {
     //breakdown choices to compare letter-by-letter
     const comparePlayerChoice = answer.split("");
     const compareGameChoice = game.word.split("");
-
-    //check for exact match - turn tile green 
-    //check for match but wrong position - turn tile orange
-    //check for no match - turn tile red and log incorrect letter
+    
+    //check for exact match - turn tile green    
     for (let i = 0; i < answer.length; i++) {
-        console.log(compareGameChoice + " player: " + comparePlayerChoice[i])
         if (comparePlayerChoice[i] === compareGameChoice[i]) {  
             letters[i].classList.remove("almost", "incorrect");
             letters[i].classList.add("correct");
             letters[i].disabled = true;
             compareGameChoice[i] = null;
-        } else if (compareGameChoice.includes(comparePlayerChoice[i])) {
+        }
+    }    
+    
+    //create new array to get around 'passing by reference' issue.
+    const compareRemaining = [];
+    for (let i = 0; i < compareGameChoice.length; i++) {
+        compareRemaining.push(compareGameChoice[i]);
+    }
+
+    //check for match but wrong position - turn tile orange    
+    for (let i = 0; i < answer.length; i++) {        
+        if (compareRemaining.includes(comparePlayerChoice[i])) {
+            const index = compareRemaining.indexOf(comparePlayerChoice[i]);
+            compareRemaining[index] = null;
             letters[i].classList.remove("incorrect");  
-            letters[i].classList.add("almost");          
-        } else {
+            letters[i].classList.add("almost");
+    //check for no match - turn tile red and log incorrect letter                      
+        } else if (letters[i].disabled === false) {
             letters[i].classList.remove("almost");  
             letters[i].classList.add("incorrect");
             if ((!game.wrongLetters.includes(letters[i].value))) {         
