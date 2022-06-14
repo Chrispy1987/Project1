@@ -12,7 +12,8 @@ const wordsByLength = [
     four = ["jazz", "high", "jerk", "lamb", "jump", "hazy", "jabs", "foxy", "joke", "hope", "pray", "play", "stay", "buzz", "pool", "link", "hint", "junk", "jaws", "jams", "ripe", "hand", "site", "shot", "fort", "mean", "lean", "team", "meat", "seat", "unit", "hurt", "slog"],
     five = ["chain"], //for testing!
     // five = ["abuse", "adult", "agent", "beach", "basis", "break", "chain", "brown", "chest", "china", "claim", "class", "dream", "final", "floor", "grass", "glass", "green", "group", "heart", "horse", "hotel", "motor", "mouth", "music", "novel", "nurse", "order", "owner", "panel", "phone", "point", "power", "radio", "scope", "score", "sheet", "shirt", "shift", "shock", "youth", "watch", "water", "whole", "while", "white", "woman", "unity", "union", "uncle", "truth"],
-    six = ["abroad", "afraid", "agenda", "anyway", "arrive", "barely", "avenue", "august", "become", "castle", "center", "caught", "choice", "custom", "debate", "defend", "defeat", "escape", "enough", "fabric", "fourth", "health", "hidden", "income", "inside", "island", "killed", "lawyer", "legacy", "launch", "manual", "margin", "people", "permit", "player", "policy", "police", "public", "reward", "return", "sample", "search", "select", "sexual", "silent", "simple", "sister", "survey", "ticket", "toward", "weight", "winter", "worker"]
+    six = ["hidden"], //for testing!
+    // six = ["abroad", "afraid", "agenda", "anyway", "arrive", "barely", "avenue", "august", "become", "castle", "center", "caught", "choice", "custom", "debate", "defend", "defeat", "escape", "enough", "fabric", "fourth", "health", "hidden", "income", "inside", "island", "killed", "lawyer", "legacy", "launch", "manual", "margin", "people", "permit", "player", "policy", "police", "public", "reward", "return", "sample", "search", "select", "sexual", "silent", "simple", "sister", "survey", "ticket", "toward", "weight", "winter", "worker"]
 ];
 //Store core game data in an Object 
 const game = {
@@ -126,30 +127,30 @@ const checkAnswer = (answer) => {
     const comparePlayerChoice = answer.split("");
     const compareGameChoice = game.word.split("");
 
-    //check for exact match, same position
+    //check for exact match - turn tile green 
+    //check for match but wrong position - turn tile orange
+    //check for no match - turn tile red and log incorrect letter
     for (let i = 0; i < answer.length; i++) {
+        console.log(compareGameChoice + " player: " + comparePlayerChoice[i])
         if (comparePlayerChoice[i] === compareGameChoice[i]) {  
-            letters[i].style.backgroundColor = "yellowgreen";
+            letters[i].classList.remove("almost", "incorrect");
+            letters[i].classList.add("correct");
             letters[i].disabled = true;
             compareGameChoice[i] = null;
-        } 
-        else {
-            letters[i].style.backgroundColor = "red";            
-        }
-    }
-
-    //check for match, but in wrong position
-    for (let i = 0; i < answer.length; i++) { 
-        if ((comparePlayerChoice.includes(compareGameChoice[i])) && (compareGameChoice[i] !== comparePlayerChoice[i])) {
-            letters[i].style.backgroundColor = "orange";
-        
-        //display incorrect letters to help player
-        } else if ((!game.wrongLetters.includes(letters[i].value)) && (letters[i].disabled === false)) {         
+        } else if (compareGameChoice.includes(comparePlayerChoice[i])) {
+            letters[i].classList.remove("incorrect");  
+            letters[i].classList.add("almost");          
+        } else {
+            letters[i].classList.remove("almost");  
+            letters[i].classList.add("incorrect");
+            if ((!game.wrongLetters.includes(letters[i].value))) {         
                 game.wrongLetters.push(letters[i].value);
                 const display = game.wrongLetters.join(', ');
                 showWrongLetters.textContent = display;
             } 
+        }
     }
+
     //if correct word, move to next level of game
     if (answer === game.word) {
         game.winStreak++;

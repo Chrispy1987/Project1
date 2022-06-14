@@ -15,8 +15,7 @@ body {
 } 
 .input {
     grid-area: 3/2/4/3;
-    background-color: rgb(229, 161, 230);
-    border-top: none;
+    /* background-color: rgb(229, 161, 230); */
 }
 .hangman {
     grid-area: 1/2/3/3;
@@ -66,6 +65,7 @@ body {
     height: 50px;
     width: 50px;
     border: solid black 1px;
+    border-radius: 10px;
     outline: none;
     transition: .5s ease all;
 }
@@ -73,10 +73,12 @@ body {
     width: 30%;
     padding: 5px;
     margin: 10px;
+    border-radius: 10px;
 }
-#submit:hover {
+#submit:hover, #submit:focus {
     background-color: yellow;
 }
+
 /*KEYFRAME ANIMATIONS*/
 @keyframes flip {
     10% {height: 40px;}
@@ -92,6 +94,17 @@ body {
 }
 .animate {
     animation: flip 0.7s ease;
+}
+
+/*GRADIENTS*/
+.correct {
+    background-image: radial-gradient(rgb(5, 247, 45), rgb(43, 183, 12));
+}
+.almost {
+    background-image: radial-gradient(rgb(252, 143, 34), rgb(200, 125, 14));    
+}
+.incorrect {
+    background-image: radial-gradient(rgb(248, 41, 41), rgb(188, 15, 15));
 }
 
 /*KEYBOARD*/
