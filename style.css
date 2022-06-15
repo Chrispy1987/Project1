@@ -1,6 +1,6 @@
 body {
     text-align: center;
-    background-color:rgba(23, 2, 36, 0.7);
+    background-color:rgba(14, 2, 22, 0.7);
 }
 
 /*CSS GRID*/
@@ -62,12 +62,12 @@ body {
     border-radius: 0 0 20px 0;
     background-color: #99d9ea;
 }
-.keyboard {
+/* .keyboard {
     grid-area: 4/1/5/4;
     background-color:rgba(22, 42, 110, 0.584)
-}
+} */
 
-/*UPDATE*/
+/*GENERAL STYLING*/
 .container {
     width: 100%;
     border: solid black 1px;
@@ -120,6 +120,9 @@ body {
 }
 #submit:hover, #submit:focus {
     background-color: yellow;
+}
+#correctGuess {
+
 }
 
 /*KEYFRAME ANIMATIONS*/

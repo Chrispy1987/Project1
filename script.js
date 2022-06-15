@@ -20,7 +20,8 @@ const wordsByLength = [
 //Store core game data in an Object 
 const game = {
     hangImages : ["images/intro.png", "images/0.png", "images/1.png", "images/2.png", "images/3.png", "images/4.png", "images/5.png", "images/6.png", "images/7.png", "images/8.png"], //update with local images
-    hangIndex : 2,      //record hangman image state
+    hangIndex : 2,     //record hangman image state
+    friendIndex : 99,   //record which friend is focused
     wrongLetters : [], //store incorrect letters to help player
     level : 0,         //game diffilculty level
     winStreak : 0,     //how many games player has won in a row
@@ -33,21 +34,35 @@ const friends = [
      name : "Bobby", 
      images : ["images/bobby.png", "images/bobby-jail.png", "images/bobby-rip.png", "images/bobby-safe.png"],
      story : "Bobby had a little too much to drink and punched a man at the bar. Unfortunately for Bobby, the man he assaulted was Chief Constable Brown",
+     isAlive : true,
+     isFree : false
     },
     Timmay = {
      name : "Timmay",
-     images : ["images/timmay.jpg"],
-     story: "TIMMAY!"
+     images : ["images/timmay.jpg", "images/timmay.jpg", "images/timmay.jpg", "images/timmay.jpg"],
+     story: "TIMMAY!",
+     isAlive : true,
+     isFree : false
     },
     Amber = {
      name : "Amber",
-     images : ["images/amber.jpg"],
-     story: "Amber did things"
+     images : ["images/amber.jpg", "images/amber.jpg", "images/amber.jpg", "images/amber.jpg" ],
+     story: "Amber did things",
+     isAlive : true,
+     isFree : false
     }
 ]
 //delay code for visual effect. Prep next level
-const gameTransition = () => {
+const gameTransition = (condition) => {
     setTimeout(() => {
+        if (condition === "endGame") {
+            game.level = 0;
+            game.winStreak = 0;
+            const parent = document.querySelector(".left");  
+            parent.firstChild.remove();                          
+            focusFriend.style.visibility = "hidden";
+            createFriends();
+        }
         clearAll();
         chooseWord();
         createLetterBoxes();
@@ -66,30 +81,45 @@ const clearAll = () => {
     hang.hangIndex = 2;
 }
 
+
 //Create friends boxes
 const createFriends = () => {
+    const leftPanel = document.querySelector(".left");
+    for (let i = 0; i < 3; i++) {
+        const image = document.createElement("img");
+        image.classList.add("friends");
+        leftPanel.appendChild(image);  
+    }     
+    
     const friendList = document.getElementsByClassName("friends");
     let index = 0;
-    console.log(friends[0].images[0])
-    console.log(friends[1].images[0])
-    console.log(friends[2].images[0])
+
     for (const friend of friendList) {
-        console.log(friend.src);
-        friend.id = index;
-        friend.src = friends[index].images[0];
-        
-        friend.addEventListener("click", function (e) {
-            const parent = document.querySelector(".left");
-            const story = document.createElement("p");
-            const getIndex = e.target.id;
-            hang.src = game.hangImages[1];
-            focusFriend.src = friends[getIndex].images[0];             
-            while (parent.hasChildNodes()) {
-                parent.firstChild.remove();
-            }
-           story.textContent = friends[getIndex].story;
-           parent.appendChild(story);
-        })
+        //check that friend is alive
+        if ((friends[index].isAlive === true) && (friends[index].isFree === false)) {
+            friend.id = index;
+            friend.src = friends[index].images[0];
+            
+            friend.addEventListener("click", function (e) {
+                const parent = document.querySelector(".left");
+                game.friendIndex = e.target.id;
+                hang.src = game.hangImages[1];
+                focusFriend.src = friends[game.friendIndex].images[1]; 
+                focusFriend.style.visibility = "visible";        
+                while (parent.hasChildNodes()) {
+                    parent.firstChild.remove();
+                }
+                const story = document.createElement("p");
+                story.textContent = friends[game.friendIndex].story;
+                parent.appendChild(story);
+            })
+        } else if (friends[index].isFree === true) {
+            friend.src = friends[index].images[3];
+            friend.style.opacity = "0.3";
+        } else {
+            friend.src = friends[index].images[2];
+            friend.style.opacity = "0.3";
+        }
         index++;
     }
 }
@@ -230,26 +260,27 @@ const checkAnswer = (answer) => {
         correctGuess.appendChild(newItem2);
         gameTransition(); 
         } else {
-            gameTransition();
+            focusFriend.src = friends[game.friendIndex].images[3]; 
+            friends[game.friendIndex].isFree = true;
+            gameTransition("endGame");
         }
-     } else {
-        if (game.hangIndex < game.hangImages.length - 1) {
+     } else if (game.hangIndex < game.hangImages.length - 1) {
             hang.src = game.hangImages[game.hangIndex];
             game.hangIndex++;
         } else {
             hang.src = game.hangImages[game.hangIndex];
-            hang.style.padding = "20px"
-            game.level = 0;
-            game.winStreak = 0;
-            gameTransition();
+            focusFriend.src = friends[game.friendIndex].images[2]; 
+            friends[game.friendIndex].isAlive = false;
+            hang.style.padding = "20px"            
+            gameTransition("endGame");
         }
          for (const letter of letters) {
              if (letter.disabled === false) {
                 return letter.focus();
              }
          }
-     }
 }
+
 
 //EVENT LISTENERS
 //switch case to change behavious of DELETE, ENTER, TAB
@@ -257,6 +288,9 @@ const checkAnswer = (answer) => {
 //Start Game
 const startGame = document.querySelector("#submit");
 startGame.addEventListener("click", () => {
+    if (game.friendIndex === 99) {
+        return alert("Please select which friend you'd like to hang out with first");
+    }
     let answer = "";
     const letters = document.querySelectorAll(".letters");
     for (const letter of letters) {
@@ -293,6 +327,6 @@ startGame.addEventListener("keyup", function(e) {
 
 
 //ON FIRST LOAD - TESTING
-createLetterBoxes(game.level);
+createLetterBoxes();
 createFriends();
-chooseWord(game.level);
+chooseWord();
