@@ -37,16 +37,16 @@ const friends = [
      isAlive : true,
      isFree : false
     },
-    Timmay = {
-     name : "Timmay",
-     images : ["images/timmay.jpg", "images/timmay.jpg", "images/timmay.jpg", "images/timmay.jpg"],
-     story: "TIMMAY!",
+    Jack = {
+     name : "Jack",
+     images : ["images/jack.png", "images/jack-jail.png", "images/jack-rip.png", "images/jack-safe.png"],
+     story: "Jack!",
      isAlive : true,
      isFree : false
     },
     Amber = {
      name : "Amber",
-     images : ["images/amber.jpg", "images/amber.jpg", "images/amber.jpg", "images/amber.jpg" ],
+     images : ["images/amber.png", "images/amber-jail.png", "images/amber-rip.png", "images/amber-safe.png"],
      story: "Amber did things",
      isAlive : true,
      isFree : false
@@ -58,11 +58,17 @@ const gameTransition = (condition) => {
         if (condition === "endGame") {
             game.level = 0;
             game.winStreak = 0;
+            game.hangIndex = 2;
+            game.friendIndex = 99;
             const parent = document.querySelector(".left");  
             parent.firstChild.remove();                          
             focusFriend.style.visibility = "hidden";
             createFriends();
-        }
+            const correctGuess = document.getElementById("correctGuess");
+            while (correctGuess.hasChildNodes()) {
+                correctGuess.firstChild.remove();
+            }
+        }        
         clearAll();
         chooseWord();
         createLetterBoxes();
@@ -93,7 +99,7 @@ const createFriends = () => {
     
     const friendList = document.getElementsByClassName("friends");
     let index = 0;
-
+    
     for (const friend of friendList) {
         //check that friend is alive
         if ((friends[index].isAlive === true) && (friends[index].isFree === false)) {
@@ -255,7 +261,7 @@ const checkAnswer = (answer) => {
         winStreak.textContent = game.winStreak;
         //Record correct word to right panel list
         const correctGuess = document.getElementById("correctGuess");
-        const newItem2 = document.createElement("li");
+        const newItem2 = document.createElement("p");
         newItem2.textContent = answer;
         correctGuess.appendChild(newItem2);
         gameTransition(); 

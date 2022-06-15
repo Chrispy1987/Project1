@@ -122,8 +122,18 @@ body {
     background-color: yellow;
 }
 #correctGuess {
-
+    background-color: lightgreen;
 }
+#winStreak {
+    background-color: lightyellow;
+}
+#wrongLetters {
+    background-color: lightcoral;
+}
+#win {
+    margin-top: 10%;
+}
+
 
 /*KEYFRAME ANIMATIONS*/
 @keyframes flip {
