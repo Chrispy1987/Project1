@@ -1,5 +1,6 @@
 body {
     text-align: center;
+    background-color:rgba(23, 2, 36, 0.7);
 }
 
 /*CSS GRID*/
@@ -15,19 +16,20 @@ body {
 } 
 .input {
     grid-area: 3/2/4/3;
-    border: solid black 1px;
     outline: none;
+    background-color: #99d9ea;
 }
 .input :focus {
-    border: solid aqua 3px;
-    outline: solid yellow 1px;
+    border: solid red 3px;
+    outline: solid rgb(7, 22, 231) 1px;
 }
 .hangman {
     grid-area: 1/2/3/3;
 }
 .topleft {
     grid-area: 1/1/2/2;
-    background-color: yellow;
+    border-radius: 20px 0 0 0;
+    background-color: #99d9ea;
 }
 .left {
     grid-area: 2/1/4/2;
@@ -35,15 +37,18 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
-    background-color: orange;
+    border-radius: 0 0 0 20px;
+    background-color: #99d9ea;
 }
 .topright {
     grid-area: 1/3/2/4;
-    background-color: rgb(196, 27, 196);
+    border-radius: 0 20px 0 0;
+    background-color: #99d9ea;
 }
 .right {
     grid-area: 2/3/4/4;
-    background-color: greenyellow;
+    border-radius: 0 0 20px 0;
+    background-color: #99d9ea;
 }
 .keyboard {
     grid-area: 4/1/5/4;
