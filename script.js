@@ -4,6 +4,7 @@ const showWrongLetters = document.getElementById("wrongLetters");
 const letters = document.getElementsByClassName("letters");
 const submit = document.getElementById("submit");
 const hang = document.getElementById("hang");
+const focusFriend = document.getElementById("focusFriend");
 
 //Words stored in an array of arrays. 1st Array for (3) letter words, 2nd Array for (4) letter words etc.
 const wordsByLength = [
@@ -28,9 +29,20 @@ const game = {
 }
 //Friend data
 const friends = [
-    {
+    Bobby = {
      name : "Bobby", 
      images : ["images/bobby.png", "images/bobby-jail.png", "images/bobby-rip.png", "images/bobby-safe.png"],
+     story : "Bobby had a little too much to drink and punched a man at the bar. Unfortunately for Bobby, the man he assaulted was Chief Constable Brown",
+    },
+    Timmay = {
+     name : "Timmay",
+     images : ["images/timmay.jpg"],
+     story: "TIMMAY!"
+    },
+    Amber = {
+     name : "Amber",
+     images : ["images/amber.jpg"],
+     story: "Amber did things"
     }
 ]
 //delay code for visual effect. Prep next level
@@ -58,14 +70,27 @@ const clearAll = () => {
 const createFriends = () => {
     const friendList = document.getElementsByClassName("friends");
     let index = 0;
+    console.log(friends[0].images[0])
+    console.log(friends[1].images[0])
+    console.log(friends[2].images[0])
     for (const friend of friendList) {
         console.log(friend.src);
-        friend.id = friends[index].name;
+        friend.id = index;
         friend.src = friends[index].images[0];
-        //index++; (un-comment out when other friends set up)
+        
         friend.addEventListener("click", function (e) {
-            console.log(e.target.id);
+            const parent = document.querySelector(".left");
+            const story = document.createElement("p");
+            const getIndex = e.target.id;
+            hang.src = game.hangImages[1];
+            focusFriend.src = friends[getIndex].images[0];             
+            while (parent.hasChildNodes()) {
+                parent.firstChild.remove();
+            }
+           story.textContent = friends[getIndex].story;
+           parent.appendChild(story);
         })
+        index++;
     }
 }
 

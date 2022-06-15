@@ -33,6 +33,9 @@ body {
 }
 .topleft {
     grid-area: 1/1/2/2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     animation:  morph 2s ease;
     border-radius: 20px 0 0 0;
     background-color: #99d9ea;
@@ -101,7 +104,13 @@ body {
     height: 25%;
     width: 75%;
     border: solid black 1px;
+    border-radius: 10px;
     background-color: white;;
+}
+#focusFriend {
+    height: 85%;
+    width: 85%;
+    border-radius: 10px;
 }
 #submit {
     width: 30%;
@@ -111,9 +120,6 @@ body {
 }
 #submit:hover, #submit:focus {
     background-color: yellow;
-}
-.friends {
-    border-radius: 10px;
 }
 
 /*KEYFRAME ANIMATIONS*/
