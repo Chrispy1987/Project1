@@ -13,18 +13,27 @@ const wordsByLength = [
     four = ["jazz", "high", "jerk", "lamb", "jump", "hazy", "jabs", "foxy", "joke", "hope", "pray", "play", "stay", "buzz", "pool", "link", "hint", "junk", "jaws", "jams", "ripe", "hand", "site", "shot", "fort", "mean", "lean", "team", "meat", "seat", "unit", "hurt", "slog"],
     // five = ["chain"], //for testing!
     five = ["abuse", "adult", "agent", "beach", "basis", "break", "chain", "brown", "chest", "china", "claim", "class", "dream", "final", "floor", "grass", "glass", "green", "group", "heart", "horse", "hotel", "motor", "mouth", "music", "novel", "nurse", "order", "owner", "panel", "phone", "point", "power", "radio", "scope", "score", "sheet", "shirt", "shift", "shock", "youth", "watch", "water", "whole", "while", "white", "woman", "unity", "union", "uncle", "truth"],
-    // six = ["island"], //for testing!
+    // six = ["anyway"], //for testing!
     six = ["abroad", "afraid", "agenda", "anyway", "arrive", "barely", "avenue", "august", "become", "castle", "center", "caught", "choice", "custom", "debate", "defend", "defeat", "escape", "enough", "fabric", "fourth", "health", "hidden", "income", "inside", "island", "killed", "lawyer", "legacy", "launch", "manual", "margin", "people", "permit", "player", "policy", "police", "public", "reward", "return", "sample", "search", "select", "sexual", "silent", "simple", "sister", "survey", "ticket", "toward", "weight", "winter", "worker"]
 ];
 //Store core game data in an Object 
 const game = {
-    hangImages : ["images/1.png", "images/2.png", "images/3.png", "images/4.png", "images/5.png", "images/6.png", "images/7.png", "images/8.png"], //update with local images
-    hangIndex : 0,      //record hangman image state
+    hangImages : ["images/intro.png", "images/0.png", "images/1.png", "images/2.png", "images/3.png", "images/4.png", "images/5.png", "images/6.png", "images/7.png", "images/8.png"], //update with local images
+    hangIndex : 2,      //record hangman image state
     wrongLetters : [], //store incorrect letters to help player
     level : 0,         //game diffilculty level
     winStreak : 0,     //how many games player has won in a row
     word : "",         //random word that player has to guess
     interval : 2000   //pause timer between rounds
+}
+
+//delay code for visual effect. Prep next level
+const gameTransition = () => {
+    setTimeout(() => {
+        clearAll();
+        chooseWord();
+        createLetterBoxes();
+    }, game.interval);
 }
 
 //Clear existing inputs for next level
@@ -35,30 +44,27 @@ const clearAll = () => {
     }
     game.wrongLetters = [];
     showWrongLetters.textContent = "";
-    hang.src = game.hangImages[0];
-    game.hangIndex = 0;
+    hang.style.padding = "0px"
+    hang.hangIndex = 2;
 }
 
 //Create letter input boxes based on the games level
 const createLetterBoxes = () => {
     const tiles = document.querySelector("#tiles");
+    if (game.level === 0) {
+        hang.src = game.hangImages[0];
+    } else {
+        hang.src = game.hangImages[1];
+    }
     for (let i = 0; i < game.level + 3; i++) {
         const input = document.createElement("input");
         input.required;
         input.classList.add("letters");
         input.classList.add("animate");
         input.maxLength = 1;
-
-        //Event listener - show focus 
+        //Event listener - select focus 
         input.addEventListener("focus", function(e) {
-            e.target.style.border = "solid aqua 3px";
-            e.target.style.outline = "solid yellow 1px";
             e.target.select();
-        })
-        //Event listener - remove focus
-        input.addEventListener("blur", function(e) {
-            e.target.style.border = "solid black 1px";
-            e.target.style.outline = "none";
         })
         //Event listener - accept A-Z only and convert to Uppercase
         //- change focus to next available input /or button
@@ -136,8 +142,8 @@ const checkAnswer = (answer) => {
             letters[i].disabled = true;
             compareGameChoice[i] = null;
         }
-    }    
-    
+    }
+
     //create new array to get around 'passing by reference' issue.
     const compareRemaining = [];
     for (let i = 0; i < compareGameChoice.length; i++) {
@@ -146,7 +152,7 @@ const checkAnswer = (answer) => {
 
     //check for match but wrong position - turn tile orange    
     for (let i = 0; i < answer.length; i++) {        
-        if (compareRemaining.includes(comparePlayerChoice[i])) {
+        if (compareRemaining.includes(comparePlayerChoice[i]) & (letters[i].disabled == false)) {
             const index = compareRemaining.indexOf(comparePlayerChoice[i]);
             compareRemaining[index] = null;
             letters[i].classList.remove("incorrect");  
@@ -165,6 +171,7 @@ const checkAnswer = (answer) => {
 
     //if correct word, move to next level of game
     if (answer === game.word) {
+        if (game.level < 3) {
         game.winStreak++;
         game.level++;         
         //Record winstreak value to right panel list
@@ -175,21 +182,20 @@ const checkAnswer = (answer) => {
         const newItem2 = document.createElement("li");
         newItem2.textContent = answer;
         correctGuess.appendChild(newItem2);
-
-        //delay code for visual effect. Prep next level
-        setTimeout(() => {
-            clearAll();
-            chooseWord();
-            createLetterBoxes();
-        }, game.interval);
+        gameTransition(); 
+        } else {
+            console.log('end')
+        }
      } else {
-        if (game.hangIndex < 7) {
+        if (game.hangIndex < game.hangImages.length - 1) {
             hang.src = game.hangImages[game.hangIndex];
-            game.hangIndex += 1;
+            game.hangIndex++;
         } else {
             hang.src = game.hangImages[game.hangIndex];
             hang.style.padding = "20px"
-            showWrongLetters.textContent = "GAME OVER!!!"
+            game.level = 0;
+            game.winStreak = 0;
+            gameTransition();
         }
          for (const letter of letters) {
              if (letter.disabled === false) {
