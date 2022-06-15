@@ -26,7 +26,13 @@ const game = {
     word : "",         //random word that player has to guess
     interval : 2000   //pause timer between rounds
 }
-
+//Friend data
+const friends = [
+    {
+     name : "Bobby", 
+     images : ["images/bobby.png", "images/bobby-jail.png", "images/bobby-rip.png", "images/bobby-safe.png"],
+    }
+]
 //delay code for visual effect. Prep next level
 const gameTransition = () => {
     setTimeout(() => {
@@ -46,6 +52,21 @@ const clearAll = () => {
     showWrongLetters.textContent = "";
     hang.style.padding = "0px"
     hang.hangIndex = 2;
+}
+
+//Create friends boxes
+const createFriends = () => {
+    const friendList = document.getElementsByClassName("friends");
+    let index = 0;
+    for (const friend of friendList) {
+        console.log(friend.src);
+        friend.id = friends[index].name;
+        friend.src = friends[index].images[0];
+        //index++; (un-comment out when other friends set up)
+        friend.addEventListener("click", function (e) {
+            console.log(e.target.id);
+        })
+    }
 }
 
 //Create letter input boxes based on the games level
@@ -184,7 +205,7 @@ const checkAnswer = (answer) => {
         correctGuess.appendChild(newItem2);
         gameTransition(); 
         } else {
-            console.log('end')
+            gameTransition();
         }
      } else {
         if (game.hangIndex < game.hangImages.length - 1) {
@@ -248,4 +269,5 @@ startGame.addEventListener("keyup", function(e) {
 
 //ON FIRST LOAD - TESTING
 createLetterBoxes(game.level);
+createFriends();
 chooseWord(game.level);
