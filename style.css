@@ -9,11 +9,10 @@ body {
     display: grid;
     grid-template-columns: 1fr 3fr 1fr;
     grid-template-rows: 1fr 2fr 1.5fr;
-    min-width: 500px;
+    min-width: 650px;
     max-width: 750px;
     min-height: 500px;
     max-height: 600px;
-    box-shadow: 7px 5px rgb(15, 15, 15, 0.5);
     border-radius: 20px;
 } 
 @keyframes morph {
@@ -24,7 +23,7 @@ body {
     grid-area: 3/2/4/3;
     animation:  morph 2s ease;
     border: solid black 1px;
-    background-color: #99d9ea;
+    background-color: #226d82;
 }
 .hangman {
     grid-area: 1/2/3/3;
@@ -58,20 +57,20 @@ body {
 }
 .right {
     grid-area: 2/3/4/4;
+    display: flex;
+    flex-direction: column;
+    justify-content:stretch;
+    align-items: center;
     animation:  morph 2s ease;
     border-radius: 0 0 20px 0;
     background-color: #99d9ea;
 }
-/* .keyboard {
-    grid-area: 4/1/5/4;
-    background-color:rgba(22, 42, 110, 0.584)
-} */
 
 /*GENERAL STYLING*/
 .container {
     width: 100%;
-    border: solid black 1px;
     height: auto;
+    border: solid rgba(15, 39, 48, 0.255) .8px;
 }
 #hang {
     width: 100%;
@@ -104,12 +103,28 @@ body {
     height: 25%;
     width: 75%;
     border: solid black 1px;
+    box-shadow: 4px 3px rgba(15, 15, 15, 0.404);
     border-radius: 10px;
     background-color: white;;
 }
+.friends:hover {
+    border: solid yellow 2px;
+    box-shadow: 5px 4px rgba(15, 15, 15, 0.404);
+}
+@keyframes jail {
+    0% {
+        border: solid red 8px;
+    }
+    50% {
+        border: solid blue 8px;
+    }
+    100% {
+        border: solid red 8px;
+    }
+}
 #focusFriend {
-    height: 85%;
-    width: 85%;
+    height: 80%;
+    width: 80%;
     border-radius: 10px;
 }
 #submit {
@@ -122,18 +137,25 @@ body {
     background-color: yellow;
 }
 #correctGuess {
+    width: 80%;
     background-color: lightgreen;
 }
 #winStreak {
+    width: 80%;
     background-color: lightyellow;
 }
 #wrongLetters {
+    width: 80%;
     background-color: lightcoral;
 }
 #win {
     margin-top: 10%;
 }
-
+p {
+    padding: 0 5px;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-size: 18px;
+}
 
 /*KEYFRAME ANIMATIONS*/
 @keyframes flip {
