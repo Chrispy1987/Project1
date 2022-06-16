@@ -5,12 +5,12 @@
 [Link to my game](https://chrispy1987.github.io/Project1)
 > Created by Chris Holliday-Smith
 
-# Tecnologies used:
+## Tecnologies used:
 > HTML
 > CSS
 > JavaScript
 
-# Approach taken:
+## Approach taken:
 I started by getting the basic functionality working - concatenating a users input and comparing it to the secret word. If correct, the tile needed to turn green. If correct but in the wrong position, the tile needed to turn orange. And if not included in the secret word at all, the tile needed to turn red.
 
 Once the basic functionality was set up, I increased the complexity by adding additional arrays and merged them into an array of arrays (for better readability and to keep the code organised)
@@ -23,9 +23,9 @@ Animations, using keyframes, were added for some extra flare!
 
 Now that I had the overall game working and looking good, I took the time to add last minute updates to improve the games flow (for example, not allowing a word to be entered until a friend had been selected, or changing the button to read 'Play Again' once all friends had been used up)
 
-# Unsolved problems:
+## Unsolved problems:
 > When player presses the TAB or ENTER key, it bypasses my codes intention of avoiding unwanted characters.
 
-# Installation instructions:
+## Installation instructions:
 > This page is hosted on GitHub and no installation is required.
 
