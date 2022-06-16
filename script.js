@@ -18,7 +18,7 @@ const game = {
     friendIndex : 99,   //record which friend is focused
     wrongLetters : [], //store incorrect letters to help player
     level : 0,         //game diffilculty level
-    winStreak : 0,     //how many games player has won in a row
+    score : 0,     //how many games player has won in a row
     word : "",         //random word that player has to guess
     interval : 2000,   //pause timer between rounds
     fearLevel : 4,  //animation gets faster as more wrong guesses are made
@@ -54,7 +54,6 @@ const gameTransition = (condition) => {
     setTimeout(() => {
         if (condition === "endGame") {
             game.level = 0;
-            game.winStreak = 0;
             game.friendIndex = 99;
             const parent = document.querySelector(".left");  
             parent.firstChild.remove();                          
@@ -144,18 +143,13 @@ const createFriends = () => {
     if (hung + free === 3) {
         game.over = true;
         submit.textContent = "PLAY AGAIN!"
-        alert(`[GAME OVER!] You saved ${free} of your friends and let ${hung} hang out to dry!`)
+        alert(`[GAME OVER!] You saved ${free} of your friends and let ${hung} hang out to dry! Your final score was ${game.score} (out of 18)`)
     }
 }
 
 //Create letter input boxes based on the games level
 const createLetterBoxes = () => {
     const tiles = document.querySelector("#tiles");
-    if (game.level === 0) {
-        hang.src = game.hangImages[0];
-    } else {
-        hang.src = game.hangImages[1];
-    }
     for (let i = 0; i < game.level + 3; i++) {
         const input = document.createElement("input");
         input.required;
@@ -227,6 +221,11 @@ const chooseWord = () => {
     const wordIndex = Math.floor(Math.random() * wordsByLength[index].length);
     game.word = wordsByLength[index][wordIndex].toUpperCase();
     console.log("SECRET WORD: " + game.word);
+    if (game.level === 0) {
+        hang.src = game.hangImages[0];
+    } else {
+        hang.src = game.hangImages[1];
+    }
 }
 
 const checkAnswer = (answer) => {
@@ -273,11 +272,11 @@ const checkAnswer = (answer) => {
     //if correct word, move to next level of game
     if (answer === game.word) {
         if (game.level < 3) {
-        game.winStreak++;
+        game.score++;
         game.level++;         
-        //Record winstreak value to right panel list
-        const winStreak = document.getElementById("winStreak");        
-        winStreak.textContent = game.winStreak;
+        //Record score value to right panel list
+        const score = document.getElementById("score");        
+        score.textContent = game.score;
         //Record correct word to right panel list
         const correctGuess = document.getElementById("correctGuess");
         const newItem2 = document.createElement("p");
@@ -286,6 +285,8 @@ const checkAnswer = (answer) => {
         gameTransition(); 
         } else {
             //All words guessed correctly - friend gets to live!
+            game.score += 3;
+            score.textContent = game.score;
             focusFriend.src = friends[game.friendIndex].images[3]; 
             friends[game.friendIndex].isFree = true;
             focusFriend.style.removeProperty("animation");
@@ -316,11 +317,7 @@ const checkAnswer = (answer) => {
          }
 }
 
-
-//EVENT LISTENERS
-//switch case to change behavious of DELETE, ENTER, TAB
-
-//Start Game
+//Event Listener - Start Game
 const startGame = document.querySelector("#submit");
 startGame.addEventListener("click", () => {
     if (game.over === true) {
