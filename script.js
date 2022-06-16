@@ -1,20 +1,14 @@
-
 //DOM
 const showWrongLetters = document.getElementById("wrongLetters");
 const letters = document.getElementsByClassName("letters");
 const submit = document.getElementById("submit");
 const hang = document.getElementById("hang");
 const focusFriend = document.getElementById("focusFriend");
-
 //Words stored in an array of arrays. 1st Array for (3) letter words, 2nd Array for (4) letter words etc.
 const wordsByLength = [
-    // three = ["fly"], //for testing!
     three = ["cat", "dog", "tip", "bee", "fly", "man", "sin", "pop", "red", "sit", "dot", "van", "rot", "bye", "dye", "sad", "arm"],
-    // four = ["jazz"], //for testing!
     four = ["jazz", "high", "jerk", "lamb", "jump", "hazy", "jabs", "foxy", "joke", "hope", "pray", "play", "stay", "buzz", "pool", "link", "hint", "junk", "jaws", "jams", "ripe", "hand", "site", "shot", "fort", "mean", "lean", "team", "meat", "seat", "unit", "hurt", "slog"],
-    // five = ["chain"], //for testing!
     five = ["abuse", "adult", "agent", "beach", "basis", "break", "chain", "brown", "chest", "china", "claim", "class", "dream", "final", "floor", "grass", "glass", "green", "group", "heart", "horse", "hotel", "motor", "mouth", "music", "novel", "nurse", "order", "owner", "panel", "phone", "point", "power", "radio", "scope", "score", "sheet", "shirt", "shift", "shock", "youth", "watch", "water", "whole", "while", "white", "woman", "unity", "union", "uncle", "truth"],
-    // six = ["anyway"], //for testing!
     six = ["abroad", "afraid", "agenda", "anyway", "arrive", "barely", "avenue", "august", "become", "castle", "center", "caught", "choice", "custom", "debate", "defend", "defeat", "escape", "enough", "fabric", "fourth", "health", "hidden", "income", "inside", "island", "killed", "lawyer", "legacy", "launch", "manual", "margin", "people", "permit", "player", "policy", "police", "public", "reward", "return", "sample", "search", "select", "sexual", "silent", "simple", "sister", "survey", "ticket", "toward", "weight", "winter", "worker"]
 ];
 //Store core game data in an Object 
@@ -26,39 +20,41 @@ const game = {
     level : 0,         //game diffilculty level
     winStreak : 0,     //how many games player has won in a row
     word : "",         //random word that player has to guess
-    interval : 2000   //pause timer between rounds
+    interval : 2000,   //pause timer between rounds
+    fearLevel : 4,  //animation gets faster as more wrong guesses are made
+    over : false
 }
 //Friend data
 const friends = [
     Bobby = {
      name : "Bobby", 
      images : ["images/bobby.png", "images/bobby-jail.png", "images/bobby-rip.png", "images/bobby-safe.png"],
-     story : "Bobby had a little too much to drink and punched a man at the bar. Unfortunately for Bobby, the man he assaulted was Chief Constable Brown",
+     story : "It's 5pm on a Friday and you're looking forward to a quiet night in. Bobby slides into your DM's, keen for 'a drink or two'. You reluctantly agree to hang out, with the night soon turning into a vivid blur and the next thing you know it's 2am and you see Bobby being dragged away by the Police for instigating a bar fight! They don't take kindly to violence in these parts, so you hobble along and try to get your friend out of trouble!",
      isAlive : true,
      isFree : false
     },
     Jack = {
      name : "Jack",
      images : ["images/jack.png", "images/jack-jail.png", "images/jack-rip.png", "images/jack-safe.png"],
-     story: "Jack!",
+     story: "You and Jack go way back, having been friends since preschool. Jack was always dealt the best hand in life - he had the fastest car, the perfect family, an amazing house and cash to boot. At least... that's what you thought! At his weekend BBQ, detectives stormed in and arrested Jack on conspiracy of money laundering and insider trading! Surely there's something you can do to save Jack from his new-found fate? You run over to the lead detective...",
      isAlive : true,
      isFree : false
     },
     Amber = {
      name : "Amber",
      images : ["images/amber.png", "images/amber-jail.png", "images/amber-rip.png", "images/amber-safe.png"],
-     story: "Amber did things",
+     story: "Amber is that annoying coworker that you'd normally try to avoid, however you're feeling sorry for her as her dog recently stepped on a bee! 'How are you holding up?', you ask sympathetically. Amber turned to you with a disgruntled look and launched a nearby bottle toward you. With cat-like reflexes, you dodged the projectile but the manager, Sam, was not so lucky. The Police have taken Amber into custody! You feel obliged to help for some reason.",
      isAlive : true,
      isFree : false
     }
 ]
+
 //delay code for visual effect. Prep next level
 const gameTransition = (condition) => {
     setTimeout(() => {
         if (condition === "endGame") {
             game.level = 0;
             game.winStreak = 0;
-            game.hangIndex = 2;
             game.friendIndex = 99;
             const parent = document.querySelector(".left");  
             parent.firstChild.remove();                          
@@ -68,7 +64,7 @@ const gameTransition = (condition) => {
             while (correctGuess.hasChildNodes()) {
                 correctGuess.firstChild.remove();
             }
-        }        
+        }  
         clearAll();
         chooseWord();
         createLetterBoxes();
@@ -84,7 +80,9 @@ const clearAll = () => {
     game.wrongLetters = [];
     showWrongLetters.textContent = "";
     hang.style.padding = "0px"
-    hang.hangIndex = 2;
+    game.hangIndex = 2;
+    game.fearLevel = 4; 
+    focusFriend.style.animation = `jail ${game.fearLevel}s infinite`;
 }
 
 
@@ -111,6 +109,7 @@ const createFriends = () => {
                 game.friendIndex = e.target.id;
                 hang.src = game.hangImages[1];
                 focusFriend.src = friends[game.friendIndex].images[1]; 
+                focusFriend.style.animation = `jail ${game.fearLevel}s infinite`;
                 focusFriend.style.visibility = "visible";        
                 while (parent.hasChildNodes()) {
                     parent.firstChild.remove();
@@ -118,6 +117,8 @@ const createFriends = () => {
                 const story = document.createElement("p");
                 story.textContent = friends[game.friendIndex].story;
                 parent.appendChild(story);
+                letters[0].focus();
+                letters[0].select();
             })
         } else if (friends[index].isFree === true) {
             friend.src = friends[index].images[3];
@@ -127,6 +128,23 @@ const createFriends = () => {
             friend.style.opacity = "0.3";
         }
         index++;
+    }
+
+    //check if all three friends have been played   
+    //announce end of game with results
+    let hung = 0;
+    let free = 0;
+    for (const i in friends) {
+        if (friends[i].isFree === true) {
+            free++;
+        } else if (friends[i].isAlive === false){
+            hung++;
+        }
+    }
+    if (hung + free === 3) {
+        game.over = true;
+        submit.textContent = "PLAY AGAIN!"
+        alert(`[GAME OVER!] You saved ${free} of your friends and let ${hung} hang out to dry!`)
     }
 }
 
@@ -208,7 +226,7 @@ const chooseWord = () => {
     const index = game.level;
     const wordIndex = Math.floor(Math.random() * wordsByLength[index].length);
     game.word = wordsByLength[index][wordIndex].toUpperCase();
-    console.log(game.word);
+    console.log("SECRET WORD: " + game.word);
 }
 
 const checkAnswer = (answer) => {
@@ -245,7 +263,8 @@ const checkAnswer = (answer) => {
             letters[i].classList.add("incorrect");
             if ((!game.wrongLetters.includes(letters[i].value))) {         
                 game.wrongLetters.push(letters[i].value);
-                const display = game.wrongLetters.join(', ');
+                game.wrongLetters.sort();
+                const display = game.wrongLetters.join(' - ');
                 showWrongLetters.textContent = display;
             } 
         }
@@ -266,18 +285,28 @@ const checkAnswer = (answer) => {
         correctGuess.appendChild(newItem2);
         gameTransition(); 
         } else {
+            //All words guessed correctly - friend gets to live!
             focusFriend.src = friends[game.friendIndex].images[3]; 
             friends[game.friendIndex].isFree = true;
+            focusFriend.style.removeProperty("animation");
+            focusFriend.style.border = "solid green 7px";
             gameTransition("endGame");
         }
      } else if (game.hangIndex < game.hangImages.length - 1) {
+            //word not yet right, progress the hangman state
             hang.src = game.hangImages[game.hangIndex];
             game.hangIndex++;
+            game.fearLevel -= 0.5;
+            focusFriend.style.animation = `jail ${game.fearLevel}s infinite`;
         } else {
+            //all chances used up - friend is hung
             hang.src = game.hangImages[game.hangIndex];
             focusFriend.src = friends[game.friendIndex].images[2]; 
             friends[game.friendIndex].isAlive = false;
-            hang.style.padding = "20px"            
+            hang.style.padding = "15px";
+            focusFriend.style.removeProperty("animation");
+            focusFriend.style.border = "solid red 7px"; 
+            alert(`The correct word was '${game.word}'. Your friend will be "hangin out" for a while!`);
             gameTransition("endGame");
         }
          for (const letter of letters) {
@@ -294,9 +323,12 @@ const checkAnswer = (answer) => {
 //Start Game
 const startGame = document.querySelector("#submit");
 startGame.addEventListener("click", () => {
+    if (game.over === true) {
+        return window.location.reload();
+    }
     if (game.friendIndex === 99) {
         return alert("Please select which friend you'd like to hang out with first");
-    }
+    }   
     let answer = "";
     const letters = document.querySelectorAll(".letters");
     for (const letter of letters) {
