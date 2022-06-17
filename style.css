@@ -1,6 +1,7 @@
 body {
     text-align: center;
-    background-color:rgba(14, 2, 22, 0.7);
+    font-family: 'Alfa Slab One', cursive;
+    background-color:rgba(23, 17, 65, 0.7);
 }
 
 /*CSS GRID*/
@@ -40,12 +41,12 @@ body {
     background-color: #99d9ea;
 }
 .left {
-    grid-area: 2/1/4/2;
+    grid-area: 1/1/4/2;
     animation:  morph 2s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-evenly;
     border-radius: 0 0 0 20px;
     background-color: #99d9ea;
 }
@@ -59,11 +60,15 @@ body {
     grid-area: 2/3/4/4;
     display: flex;
     flex-direction: column;
-    justify-content:stretch;
+    justify-content: flex-start;
     align-items: center;
     animation:  morph 2s ease;
     border-radius: 0 0 20px 0;
     background-color: #99d9ea;
+}
+.right div:nth-child(2) {
+    height: auto;
+    margin-top: 80px;
 }
 
 /*GENERAL STYLING*/
@@ -76,17 +81,20 @@ body {
     width: 100%;
     height: 100%;
     box-sizing: border-box;
-    background-color: red;
+    background-color: #99d9ea;
+}
+.input > div > ul {
+    margin: 0px;
+    padding: 0px;
 }
 #tiles {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
     align-items: center;
 }
 .letters {
-    font-family: 'Alfa Slab One', cursive;
-    margin: 0px;
     text-align: center;
+    margin: 30px 0 20px 0;
     font-size: 20px;
     height: 50px;
     width: 50px;
@@ -128,8 +136,8 @@ body {
     border-radius: 10px;
 }
 #submit {
-    width: 30%;
-    padding: 5px;
+    width: 33%;
+    padding: 10px;
     margin: 10px;
     border-radius: 10px;
 }
@@ -137,14 +145,17 @@ body {
     background-color: yellow;
 }
 #correctGuess {
+    margin: 0 auto;
     width: 80%;
     background-color: lightgreen;
 }
 #score {
+    margin: 0-auto;
     width: 80%;
     background-color: lightyellow;
 }
 #wrongLetters {
+    margin: 0 auto;
     width: 80%;
     background-color: lightcoral;
 }
@@ -155,6 +166,11 @@ p {
     padding: 0 5px;
     font-family: 'Yanone Kaffeesatz', sans-serif;
     font-size: 18px;
+}
+h3 {
+    color: #226d82;
+    font-size: 15px;
+    text-decoration: underline;
 }
 
 /*KEYFRAME ANIMATIONS*/
@@ -184,29 +200,3 @@ p {
 .incorrect {
     background-image: radial-gradient(rgb(248, 41, 41), rgb(188, 15, 15));
 }
-
-/* KEYBOARD (not currently in use)
-.keyboard {
-    margin: 0 auto;
-    padding: 10px;
-    border: solid black 2px;
-    border-radius: 10px;
-}
-
-.row {
-    display: flex;
-    justify-content: space-between;
-    background-color: transparent;
-}
-
-.key {
-    height: 40px;
-    width: 43px;
-    min-width: 20px;
-    min-height: 20px;
-    margin: 2px;
-    background-color: lightgrey;
-}
-.key:hover {
-    background-color: rgb(6, 224, 213);
-} */
