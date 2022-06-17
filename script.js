@@ -22,6 +22,7 @@ const game = {
     word : "",         //random word that player has to guess
     interval : 2000,   //pause timer between rounds
     fearLevel : 4,  //animation gets faster as more wrong guesses are made
+    inPlay : true,
     over : false
 }
 //Friend data
@@ -149,6 +150,7 @@ const createFriends = () => {
 
 //Create letter input boxes based on the games level
 const createLetterBoxes = () => {
+    game.inPlay = true;
     const tiles = document.querySelector("#tiles");
     for (let i = 0; i < game.level + 3; i++) {
         const input = document.createElement("input");
@@ -272,19 +274,21 @@ const checkAnswer = (answer) => {
     //if correct word, move to next level of game
     if (answer === game.word) {
         if (game.level < 3) {
-        game.score++;
-        game.level++;         
-        //Record score value to right panel list
-        const score = document.getElementById("score");        
-        score.textContent = game.score;
-        //Record correct word to right panel list
-        const correctGuess = document.getElementById("correctGuess");
-        const newItem2 = document.createElement("p");
-        newItem2.textContent = answer;
-        correctGuess.appendChild(newItem2);
-        gameTransition(); 
+            game.inPlay = false;
+            game.score++;
+            game.level++;         
+            //Record score value to right panel list
+            const score = document.getElementById("score");        
+            score.textContent = game.score;
+            //Record correct word to right panel list
+            const correctGuess = document.getElementById("correctGuess");
+            const newItem2 = document.createElement("p");
+            newItem2.textContent = answer;
+            correctGuess.appendChild(newItem2);
+            gameTransition(); 
         } else {
             //All words guessed correctly - friend gets to live!
+            game.inPlay = false;
             game.score += 3;
             score.textContent = game.score;
             focusFriend.src = friends[game.friendIndex].images[3]; 
@@ -320,6 +324,10 @@ const checkAnswer = (answer) => {
 //Event Listener - Start Game
 const startGame = document.querySelector("#submit");
 startGame.addEventListener("click", () => {
+    if (game.inPlay === false) {
+        console.log('ignored click');
+        return;
+    }
     if (game.over === true) {
         return window.location.reload();
     }
