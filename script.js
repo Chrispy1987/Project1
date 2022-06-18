@@ -44,46 +44,11 @@ const friends = [
     Amber = {
      name : "Amber",
      images : ["images/amber.png", "images/amber-jail.png", "images/amber-rip.png", "images/amber-safe.png"],
-     story: "Amber is that annoying coworker that you'd normally try to avoid, however you've been feeling sorry for her as her dog recently stepped on a bee! 'How are you holding up?', you ask sympathetically. Amber turned to you with a disgruntled look and launched a nearby bottle toward you. With cat-like reflexes, you dodged the projectile but the manager, Johnny, was not so lucky. The Police have taken Amber into custody! You feel obliged to help for some reason.",
+     story: "Amber is that annoying coworker that you'd normally try to avoid, however you've been feeling sorry for her as her dog stepped on a bee! 'How are you holding up?', you ask sympathetically. Amber turned to you with a disgruntled look and launched a nearby bottle toward you. With cat-like reflexes, you dodged the projectile but the manager, Johnny, was not so lucky. The Police have taken Amber into custody! You feel obliged to help for some reason.",
      isAlive : true,
      isFree : false
     }
 ]
-
-//Timeout code for visual effect. Prep page for next level
-const gameTransition = (condition) => {
-    setTimeout(() => {
-        if (condition === "endGame") {
-            game.level = 0;
-            game.friendIndex = 99;
-            const parent = document.querySelector(".left");  
-            parent.firstChild.remove();                          
-            createFriends();
-            const correctGuess = document.getElementById("correctGuess");
-            while (correctGuess.hasChildNodes()) {
-                correctGuess.firstChild.remove();
-            }
-        }  
-        clearAll();
-        chooseWord();
-        createLetterBoxes();
-    }, game.interval);
-}
-
-//Clear existing inputs for next level
-const clearAll = () => {
-    const tiles = document.querySelector("#tiles");
-    while(tiles.hasChildNodes()) {
-      tiles.firstChild.remove();
-    }
-    game.wrongLetters = [];
-    showWrongLetters.textContent = "";
-    hang.style.padding = "0px"
-    game.hangIndex = 2;
-    game.fearLevel = 4; 
-    focusFriend.style.animation = `jail ${game.fearLevel}s infinite`;
-}
-
 
 //Create friend panels
 const createFriends = () => {
@@ -254,7 +219,7 @@ const checkAnswer = (answer) => {
             letters[i].classList.remove("almost", "incorrect");
             letters[i].classList.add("correct");
             letters[i].disabled = true;
-            compareGameChoice[i] = null;
+            compareGameChoice[i] = null; 
         }
     }
 
@@ -337,6 +302,40 @@ const checkAnswer = (answer) => {
          }
 }
 
+//Timeout code for visual effect. Prep page for next level
+const gameTransition = (condition) => {
+    setTimeout(() => {
+        if (condition === "endGame") {
+            game.level = 0;
+            game.friendIndex = 99;
+            const parent = document.querySelector(".left");  
+            parent.firstChild.remove();                          
+            createFriends();
+            const correctGuess = document.getElementById("correctGuess");
+            while (correctGuess.hasChildNodes()) {
+                correctGuess.firstChild.remove();
+            }
+        }  
+        clearAll();
+        chooseWord();
+        createLetterBoxes();
+    }, game.interval);
+}
+
+//Clear existing inputs for next level
+const clearAll = () => {
+    const tiles = document.querySelector("#tiles");
+    while(tiles.hasChildNodes()) {
+      tiles.firstChild.remove();
+    }
+    game.wrongLetters = [];
+    showWrongLetters.textContent = "";
+    hang.style.padding = "0px"
+    game.hangIndex = 2;
+    game.fearLevel = 4; 
+    focusFriend.style.animation = `jail ${game.fearLevel}s infinite`;
+}
+
 //Event Listener - Start Game
 const startGame = document.querySelector("#submit");
 startGame.addEventListener("click", () => {
@@ -365,6 +364,7 @@ startGame.addEventListener("click", () => {
     }
     checkAnswer(answer);
 });
+
 //Event listener - delete or backspace will allow the button focus to shift back to inputs
 startGame.addEventListener("keyup", function(e) {
     const key = e.key;
@@ -387,7 +387,6 @@ startGame.addEventListener("keyup", function(e) {
         }
     }
 })
-
 
 //ON FIRST LOAD - TESTING
 createFriends();
